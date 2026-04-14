@@ -23,8 +23,8 @@ jobs:
     
     - name: Build APK
       run: |
-        chmod +x gradlew
-        ./gradlew assembleDebug
+        ls -la
+        bash gradlew assembleDebug
       working-directory: scannerapp
     
     - name: Upload APK
