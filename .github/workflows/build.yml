@@ -18,14 +18,29 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
+    - name: Set up Android SDK
+      run: |
+        mkdir -p $HOME/android-sdk
+        cd $HOME/android-sdk
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline.zip
+        unzip -q cmdline.zip
+        mkdir -p cmdline-tools/latest
+        mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
+        export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+        yes | sdkmanager --licenses > /dev/null 2>&1
+        sdkmanager "platforms;android-34" "build-tools;34.0.0"
+      env:
+        ANDROID_HOME: $HOME/android-sdk
+        ANDROID_SDK_ROOT: $HOME/android-sdk
     
     - name: Build APK
       run: |
-        ls -la
-        bash gradlew assembleDebug
-      working-directory: scannerapp
+        export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+        export ANDROID_HOME=$HOME/android-sdk
+        export ANDROID_SDK_ROOT=$HOME/android-sdk
+        cd scannerapp
+        chmod +x gradlew
+        ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
