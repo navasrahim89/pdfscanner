@@ -11,6 +11,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        path: .
     
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -26,16 +28,16 @@ jobs:
         unzip -q cmdline.zip
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1
         $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0"
-      shell: pwsh
+      shell: bash
     
     - name: Build APK
       run: |
-        $env:PATH = "$HOME/android-sdk/cmdline-tools/latest/bin:$env:PATH"
-        $env:ANDROID_HOME = $HOME/android-sdk
-        $env:ANDROID_SDK_ROOT = $HOME/android-sdk
+        export PATH="$HOME/android-sdk/cmdline-tools/latest/bin:$PATH"
+        export ANDROID_HOME="$HOME/android-sdk"
+        ls -la
         chmod +x gradlew
         ./gradlew assembleDebug
-      shell: pwsh
+      shell: bash
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
