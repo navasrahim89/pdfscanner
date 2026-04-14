@@ -1,2 +1,6 @@
-#!/bin/sh
-exec java -Xmx64m -Xms64m -classpath "$0/gradle/wrapper/gradle-wrapper.jar" org.gradle.wrapper.GradleWrapperMain "$@"
+#!/usr/bin/env sh
+set -e
+APP_BASE_NAME=$(basename "$0")
+APP_HOME=$(cd "$(dirname "$0")" && pwd -P)
+CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+exec java -Xmx64m -Xms64m -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
